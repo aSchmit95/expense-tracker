@@ -3,9 +3,10 @@ import uuid
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.staticfiles import StaticFiles
 
+from config import UPLOAD_PASSWORD
 from database import add_expense, delete_expense, get_expenses, get_stats, init_db
 from vlm import analyze_receipt
 
@@ -25,7 +26,12 @@ async def startup():
 
 
 @app.post("/api/upload")
-async def upload_receipt(file: UploadFile = File(...)):
+async def upload_receipt(
+    file: UploadFile = File(...),
+    x_upload_password: str = Header(default=""),
+):
+    if UPLOAD_PASSWORD and x_upload_password != UPLOAD_PASSWORD:
+        raise HTTPException(status_code=401, detail="Invalid password.")
     if file.content_type not in ALLOWED_MIME_TYPES:
         raise HTTPException(
             status_code=400,

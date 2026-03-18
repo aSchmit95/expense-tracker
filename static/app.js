@@ -73,8 +73,14 @@ async function uploadFile(file) {
   const formData = new FormData();
   formData.append("file", file);
 
+  const password = document.getElementById("upload-password").value;
+
   try {
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "x-upload-password": password },
+      body: formData,
+    });
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({ detail: "Unknown error" }));
