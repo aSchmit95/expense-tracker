@@ -1,0 +1,15 @@
+services:
+  expense-tracker:
+    build: .
+    ports:
+      - "8001:8000"
+    volumes:
+      - expense_db:/app/expenses.db
+      - expense_uploads:/app/uploads
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  expense_db:
+  expense_uploads:
