@@ -1,8 +1,9 @@
+import os
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = "expenses.db"
+DB_PATH = os.getenv("DB_PATH", "expenses.db")
 
 
 def init_db():
